@@ -52,30 +52,34 @@ export function generateRecurrenceDates(recurrence, count = 10) {
   }
 
   // Monthly Recurrence with Pattern (optional)
-  else if (frequency === "monthly" && usePattern && monthlyOcc && monthlyDay) {
-    const weekdayIndex = {
-      Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3,
-      Thursday: 4, Friday: 5, Saturday: 6,
-    }[monthlyDay];
+  else if (frequency === "weekly") {
+    let current = new Date(startDate);
+    let generated = 0;
 
-    const nthMap = {
-      First: 1, Second: 2, Third: 3, Fourth: 4, Last: -1,
-    };
-    const nth = nthMap[monthlyOcc];
+    // Decide which weekdays to use
+    let weekdays;
+    if (recurrence.useMultipleWeekdays && (daysOfWeek?.length > 0)) {
+      weekdays = daysOfWeek.map(day =>
+        ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(day)
+      );
+    } else {
+      // Default: single weekday (start date)
+      weekdays = [new Date(startDate).getDay()];
+    }
 
-    let currentMonth = new Date(startDate);
-
-    while (output.length < count && isBeforeEnd(currentMonth)) {
-      const year = currentMonth.getFullYear();
-      const month = currentMonth.getMonth();
-
-      const date = getNthWeekdayOfMonth(year, month, weekdayIndex, nth);
-
-      if (date >= new Date(startDate) && isBeforeEnd(date)) {
-        output.push(date);
-      }
-
-      currentMonth.setMonth(month + interval);
+    while (generated < count && (!endDate || current <= new Date(endDate))) {
+      weekdays.forEach(idx => {
+        let nextDate = new Date(current);
+        nextDate.setDate(current.getDate() - current.getDay() + idx);
+        if (nextDate >= new Date(startDate) &&
+            (!endDate || nextDate <= new Date(endDate)) &&
+            generated < count
+        ) {
+          output.push(new Date(nextDate));
+          generated++;
+        }
+      });
+      current.setDate(current.getDate() + interval * 7);
     }
   }
 

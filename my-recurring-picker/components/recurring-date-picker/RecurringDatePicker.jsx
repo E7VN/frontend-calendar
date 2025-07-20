@@ -66,34 +66,53 @@ export default function RecurringDatePicker() {
       {/* Day of Week Selector (for Weekly only) */}
       {recurrence.frequency === "weekly" && (
         <div className="mb-4">
-          <label className="block font-semibold mb-1">Repeat on:</label>
-          <div className="flex gap-2">
-            {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(day => (
-              <label key={day} className="flex items-center text-sm">
-                <input
-                  type="checkbox"
-                  checked={recurrence.daysOfWeek?.includes(day)}
-                  onChange={e => {
-                    if (e.target.checked) {
-                      setRecurrence({
-                        ...recurrence,
-                        daysOfWeek: [...(recurrence.daysOfWeek || []), day],
-                      });
-                    } else {
-                      setRecurrence({
-                        ...recurrence,
-                        daysOfWeek: (recurrence.daysOfWeek || []).filter(d => d !== day),
-                      });
-                    }
-                  }}
-                  className="mr-1"
-                />
-                {day}
-              </label>
-            ))}
-          </div>
+          <label className="inline-flex items-center gap-2 text-sm font-medium">
+            <input
+              type="checkbox"
+              className="accent-blue-600"
+              checked={recurrence.useMultipleWeekdays || false}
+              onChange={e => setRecurrence({
+                ...recurrence,
+                useMultipleWeekdays: e.target.checked,
+                // Reset to just the weekday of start when turning off:
+                daysOfWeek: e.target.checked
+                  ? (recurrence.daysOfWeek || [])
+                  : [["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][new Date(recurrence.startDate).getDay()]],
+              })}
+            />
+            Repeat on specific weekdays
+          </label>
+
+          {recurrence.useMultipleWeekdays && (
+            <div className="flex gap-2 mt-2">
+              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(day => (
+                <label key={day} className="flex items-center text-sm">
+                  <input
+                    type="checkbox"
+                    checked={recurrence.daysOfWeek?.includes(day)}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        setRecurrence({
+                          ...recurrence,
+                          daysOfWeek: [...(recurrence.daysOfWeek || []), day],
+                        });
+                      } else {
+                        setRecurrence({
+                          ...recurrence,
+                          daysOfWeek: (recurrence.daysOfWeek || []).filter(d => d !== day),
+                        });
+                      }
+                    }}
+                    className="mr-1"
+                  />
+                  {day}
+                </label>
+              ))}
+            </div>
+          )}
         </div>
       )}
+
       {recurrence.frequency === "monthly" && (
       <div className="mb-4">
         {/* Toggle: Use pattern (e.g., Second Tuesday) */}
@@ -228,7 +247,6 @@ export default function RecurringDatePicker() {
       {previewDates.length > 0 && (
         <div className="mt-4">
           <p className="font-semibold mb-1">🗓️ Calendar Preview:</p>
-          <div className="pointer-events-none opacity-100">
             <DayPicker
               mode="multiple"
               selected={previewDates}
@@ -236,9 +254,7 @@ export default function RecurringDatePicker() {
               styles={{
                 selected: { backgroundColor: "#4f46e5", color: "white" },
               }}
-              disabled={[{ dayOfWeek: [0, 1, 2, 3, 4, 5, 6] }]}
             />
-          </div>
         </div>
       )}
     </div>
