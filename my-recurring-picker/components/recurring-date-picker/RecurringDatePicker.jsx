@@ -18,15 +18,18 @@ export default function RecurringDatePicker() {
   const { recurrence, setRecurrence } = useRecurrence();
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
-  const previewDates = generateRecurrenceDates(recurrence, 10);
-
+  const previewDates = generateRecurrenceDates(recurrence, 10)
+  .map(d => new Date(d.getFullYear(), d.getMonth(), d.getDate()));
+  console.log("🔍 previewDates", previewDates);
+  
   return (
-    <div className="p-4 bg-white rounded shadow max-w-md">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-teal-300 via-teal-400 to-cyan-600">
+    <div className="max-w-md w-full p-6 bg-white rounded-2xl shadow-xl">
       {/* Frequency Selector */}
       <div className="mb-4">
         <label className="block font-semibold mb-1">Frequency:</label>
         <select
-          className="border rounded px-2 py-1"
+          className="border rounded px-2 py-1 hover:bg-teal-100"
           value={recurrence.frequency}
           onChange={e => setRecurrence({ ...recurrence, frequency: e.target.value })}
         >
@@ -125,6 +128,8 @@ export default function RecurringDatePicker() {
               setRecurrence({
                 ...recurrence,
                 usePattern: e.target.checked,
+                monthlyOcc: e.target.checked ? recurrence.monthlyOcc || "Second" : "",
+                monthlyDay: e.target.checked ? recurrence.monthlyDay || "Tuesday" : "",
               })
             }
           />
@@ -187,7 +192,7 @@ export default function RecurringDatePicker() {
         <label className="block font-semibold mb-1">Start Date:</label>
         <button
           onClick={() => setShowStartPicker(v => !v)}
-          className="border px-3 py-2 rounded bg-gray-50"
+          className="border border-gray-300 bg-white text-gray-800 px-3 py-2 rounded-lg shadow-sm hover:bg-teal-100 font-medium transition min-w-[160px]"
         >
           {recurrence.startDate
             ? format(recurrence.startDate, "yyyy-MM-dd")
@@ -197,7 +202,7 @@ export default function RecurringDatePicker() {
           <div>
             <DayPicker
               mode="single"
-              selected={recurrence.startDate}
+              selected={previewDates.map(d => new Date(d.getFullYear(), d.getMonth(), d.getDate()))}
               onSelect={date => {
                 setRecurrence({ ...recurrence, startDate: date });
                 setShowStartPicker(false);
@@ -214,7 +219,7 @@ export default function RecurringDatePicker() {
         </label>
         <button
           onClick={() => setShowEndPicker(v => !v)}
-          className="border px-3 py-2 rounded bg-gray-50"
+          className="border border-gray-300 bg-white text-gray-800 px-3 py-2 rounded-lg shadow-sm hover:bg-teal-100 font-medium transition min-w-[160px]"
         >
           {recurrence.endDate
             ? format(recurrence.endDate, "yyyy-MM-dd")
@@ -243,20 +248,24 @@ export default function RecurringDatePicker() {
           </ul>
         </div>
       )}
+      
       {/* Calendar View */}
       {previewDates.length > 0 && (
-        <div className="mt-4">
+        <div className="mt-6">
           <p className="font-semibold mb-1">🗓️ Calendar Preview:</p>
-            <DayPicker
-              mode="multiple"
-              selected={previewDates}
-              showOutsideDays
-              styles={{
-                selected: { backgroundColor: "#4f46e5", color: "white" },
-              }}
-            />
+          <DayPicker
+            mode="multiple"
+            selected={previewDates}
+            showOutsideDays
+            styles={{
+              selected: { backgroundColor: "#4f46e5", color: "teal" },
+            }}
+            // Do not add onSelect (so users can't edit selection)
+            // Do not use pointer-events-none or disabled, so users can navigate months
+          />
         </div>
       )}
+    </div>
     </div>
   );
 }

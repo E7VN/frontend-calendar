@@ -9,7 +9,8 @@ export function RecurrenceProvider({ children }) {
   const [recurrence, setRecurrence] = useState({
     frequency: "daily",
     interval: 1,
-    daysOfWeek: [],
+    daysOfWeek: ["Mon"],
+    useMultipleWeekdays: false,
     pattern: null,
     startDate: null,
     endDate: null,
