@@ -114,7 +114,6 @@ export default function RecurringDatePicker() {
 
       {recurrence.frequency === "monthly" && (
       <div className="mb-4">
-        {/* Toggle: Use pattern (e.g., Second Tuesday) */}
         <label className="inline-flex items-center gap-2 text-sm font-medium">
           <input
             type="checkbox"
