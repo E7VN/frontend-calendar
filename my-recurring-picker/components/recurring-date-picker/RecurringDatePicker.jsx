@@ -19,11 +19,9 @@ export default function RecurringDatePicker() {
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
   const previewDates = generateRecurrenceDates(recurrence, 10)
-  .map(d => new Date(d.getFullYear(), d.getMonth(), d.getDate()));
-  console.log("🔍 previewDates", previewDates);
   
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-teal-300 via-teal-400 to-cyan-600">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br py-12 from-teal-300 via-teal-400 to-cyan-600">
     <div className="max-w-md w-full p-6 bg-white rounded-2xl shadow-xl">
       {/* Frequency Selector */}
       <div className="mb-4">
@@ -52,7 +50,6 @@ export default function RecurringDatePicker() {
             onChange={e => setRecurrence({ ...recurrence, interval: Number(e.target.value) })}
             className="w-16 border rounded px-2 py-1 mx-2"
           />
-          {/* Dynamic singular/plural label */}
           {(() => {
             const freqLabels = {
               daily: ["Day", "Days"],
@@ -66,7 +63,7 @@ export default function RecurringDatePicker() {
         </label>
       </div>
 
-      {/* Day of Week Selector (for Weekly only) */}
+      {/* Day of Week Selector*/}
       {recurrence.frequency === "weekly" && (
         <div className="mb-4">
           <label className="inline-flex items-center gap-2 text-sm font-medium">
@@ -77,7 +74,6 @@ export default function RecurringDatePicker() {
               onChange={e => setRecurrence({
                 ...recurrence,
                 useMultipleWeekdays: e.target.checked,
-                // Reset to just the weekday of start when turning off:
                 daysOfWeek: e.target.checked
                   ? (recurrence.daysOfWeek || [])
                   : [["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][new Date(recurrence.startDate).getDay()]],
@@ -238,6 +234,7 @@ export default function RecurringDatePicker() {
           </div>
         )}
       </div>
+
       {previewDates.length > 0 && (
         <div className="mt-6">
           <p className="font-semibold mb-1">Preview Next {previewDates.length} Occurrences:</p>
@@ -260,8 +257,6 @@ export default function RecurringDatePicker() {
             styles={{
               selected: { backgroundColor: "#4f46e5", color: "teal" },
             }}
-            // Do not add onSelect (so users can't edit selection)
-            // Do not use pointer-events-none or disabled, so users can navigate months
           />
         </div>
       )}

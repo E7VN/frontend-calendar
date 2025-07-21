@@ -30,7 +30,6 @@
   }
 }
 
-/* Input & Button component styles */
 @layer components {
   input[type="text"],
   input[type="email"],

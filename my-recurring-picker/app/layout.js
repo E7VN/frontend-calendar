@@ -1,8 +1,6 @@
-// 🗂️ File: app/layout.js
-
 import './globals.css';
 import { Inter } from 'next/font/google';
-import { RecurrenceProvider } from '../contexts/RecurrenceContext'; // ✅ IMPORT YOUR CONTEXT
+import { RecurrenceProvider } from '../contexts/RecurrenceContext'; 
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -15,7 +13,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        {/* ✅ WRAP APP WITH YOUR CONTEXT PROVIDER */}
         <RecurrenceProvider>
           {children}
         </RecurrenceProvider>

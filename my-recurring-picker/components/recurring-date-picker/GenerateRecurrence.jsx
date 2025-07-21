@@ -17,7 +17,6 @@ export function generateRecurrenceDates(recurrence, count = 10) {
   const isBeforeEnd = (date) => !endDate || date <= new Date(endDate);
   let current = new Date(startDate);
 
-  // DAILY
   if (frequency === "daily") {
     while (output.length < count && isBeforeEnd(current)) {
       output.push(new Date(current));
@@ -25,7 +24,6 @@ export function generateRecurrenceDates(recurrence, count = 10) {
     }
   }
 
-  // WEEKLY
   else if (frequency === "weekly") {
     let generated = 0;
 
@@ -36,7 +34,6 @@ export function generateRecurrenceDates(recurrence, count = 10) {
         ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(d)
       );
     } else {
-      // default to weekday of startDate
       weekdays = [new Date(startDate).getDay()];
     }
 
@@ -56,7 +53,6 @@ export function generateRecurrenceDates(recurrence, count = 10) {
     }
   }
 
-  // MONTHLY with pattern (like 2nd Thursday)
   else if (frequency === "monthly" && usePattern && monthlyOcc && monthlyDay) {
     const weekdayIndex = {
       Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3,
@@ -85,11 +81,10 @@ export function generateRecurrenceDates(recurrence, count = 10) {
       }
 
       monthCursor.setMonth(monthCursor.getMonth() + interval);
-      monthCursor.setDate(1); // prevent date roll-over issues
+      monthCursor.setDate(1);
     }
   }
 
-  // MONTHLY (default, same date every month like 31st)
   else if (frequency === "monthly") {
     const targetDay = new Date(startDate).getDate();
 
@@ -111,7 +106,6 @@ export function generateRecurrenceDates(recurrence, count = 10) {
     }
   }
 
-  // YEARLY
   else if (frequency === "yearly") {
     while (output.length < count && isBeforeEnd(current)) {
       output.push(new Date(current));
@@ -130,7 +124,6 @@ function getNthWeekdayOfMonth(year, month, weekday, n) {
     const day = 1 + offset + 7 * (n - 1);
     return new Date(year, month, day);
   } else {
-    // Last occurrence
     const lastDay = new Date(year, month + 1, 0);
     for (let i = lastDay.getDate(); i >= 1; i--) {
       const d = new Date(year, month, i);
