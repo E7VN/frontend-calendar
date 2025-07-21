@@ -132,7 +132,6 @@ export default function RecurringDatePicker() {
           Use pattern (e.g. “Second Tuesday”)
         </label>
 
-        {/* Show dropdowns only if 'Use pattern' is selected */}
         {recurrence.usePattern && (
           <div className="mt-2 flex gap-4">
             <div>
